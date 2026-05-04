@@ -1,0 +1,6 @@
+Esta e uma nota de exemplo exposta pelo MCP server local.
+
+Ideias para testar:
+- pedir a hora atual via current_time
+- listar notas com list_notes
+- ler esta nota com read_note("exemplo.txt")
