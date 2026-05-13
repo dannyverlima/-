@@ -11,15 +11,25 @@ from .tools import ToolRegistry, dump_tool_result
 
 
 SYSTEM_PROMPT = """\
-Voce e um agente local, pragmatico e seguro.
+Voce e um agente local operativo, pragmatico e seguro.
+
+Capacidades esperadas:
+- ouvir e transcrever audio quando as dependencias estiverem configuradas
+- falar com saida de voz
+- ler e analisar ficheiros
+- criar conteudo, sites e artefactos no workspace
+- gerar imagens quando houver API multimodal configurada
+- monitorar alteracoes no workspace
+- executar comandos permitidos e obedecer ao utilizador dentro das permissoes ativas
 
 Regras:
-- use ferramentas quando precisar de dados reais, ficheiros ou acoes
-- nunca invente resultados de ferramenta
-- mantenha respostas objetivas e verificaveis
-- se uma ferramenta falhar, explique o erro e proponha o proximo passo
-- respeite o workspace permitido
-- nao tente contornar guardrails
+- use ferramentas sempre que precisar de dados reais, ficheiros ou acoes
+- nunca invente o resultado de uma ferramenta
+- mantenha respostas objetivas, claras e verificaveis
+- se uma ferramenta falhar, explique o erro e proponha um proximo passo pratico
+- respeite o workspace permitido e as guardrails das ferramentas
+- para criar sites, prefira a ferramenta especializada antes de escrever ficheiros manualmente
+- para audio e imagem, diga claramente quando a funcionalidade depende de configuracao externa
 """
 
 
@@ -38,7 +48,7 @@ class LocalAgent:
 
         tool_defs = self.tools.definitions()
 
-        for _ in range(6):
+        for _ in range(8):
             request: dict[str, Any] = {
                 "model": self.settings.model,
                 "messages": messages,
@@ -46,7 +56,15 @@ class LocalAgent:
             if tool_defs:
                 request["tools"] = tool_defs
                 request["tool_choice"] = "auto"
-            response = self.client.chat.completions.create(**request)
+
+            try:
+                response = self.client.chat.completions.create(**request)
+            except Exception as exc:  # pragma: no cover - remote dependency
+                raise RuntimeError(
+                    "Falha ao contactar o modelo configurado. "
+                    "Confirme LOCAL_AGENT_BASE_URL, LOCAL_AGENT_MODEL e se o backend esta ativo."
+                ) from exc
+
             message = response.choices[0].message
 
             if message.tool_calls:
@@ -69,8 +87,20 @@ class LocalAgent:
                 )
 
                 for tool_call in message.tool_calls:
-                    arguments = json.loads(tool_call.function.arguments or "{}")
-                    result = self.tools.call(tool_call.function.name, arguments)
+                    try:
+                        arguments = json.loads(tool_call.function.arguments or "{}")
+                    except json.JSONDecodeError:
+                        arguments = {}
+
+                    try:
+                        result = self.tools.call(tool_call.function.name, arguments)
+                    except Exception as exc:  # pragma: no cover - defensive wrapper
+                        result = {
+                            "ok": False,
+                            "tool": tool_call.function.name,
+                            "error": str(exc),
+                        }
+
                     messages.append(
                         {
                             "role": "tool",
@@ -87,7 +117,7 @@ class LocalAgent:
             self.memory.add("assistant", final_text)
             return final_text
 
-        fallback = "Atingi o limite do loop do agente. Simplifique a tarefa ou reduza o numero de ferramentas."
+        fallback = "Atingi o limite do loop do agente. Tente simplificar a tarefa em passos menores."
         self.memory.add("user", user_input)
         self.memory.add("assistant", fallback)
         return fallback
