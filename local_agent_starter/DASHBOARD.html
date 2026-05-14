@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agente Local - Visualização</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 30px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 35px 25px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+        }
+
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .feature-description {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .tag {
+            background: #f0f0f0;
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .command-item {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .command-name {
+            font-family: 'Courier New', monospace;
+            background: #e8eaf6;
+            color: #667eea;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .command-description {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 50px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .architecture {
+            background: #f5f5f5;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .architecture h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .architecture-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .architecture-item strong {
+            color: #667eea;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 30px 20px;
+            opacity: 0.8;
+        }
+
+        .emoji-large {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            .section {
+                padding: 25px;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .cta-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Agente Local</h1>
+            <p>Dashboard interativo multimodal para automação inteligente</p>
+        </header>
+
+        <!-- Features Overview -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <div class="feature-title">Chat Inteligente</div>
+                <div class="feature-description">Converse com o agente usando modelos locais ou APIs multimodais.</div>
+                <div class="feature-tags">
+                    <span class="tag">Texto</span>
+                    <span class="tag">IA</span>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎤</div>
+                <div class="feature-title">Processamento de Voz</div>
+                <div class="feature-description">Grave áudio, transcreva automaticamente e obtenha respostas faladas.</div>
+                <div class="feature-tags">
+                    <span class="tag">Áudio</span>
+                    <span class="tag">Transcrição</span>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🖼️</div>
+                <div class="feature-title">Geração de Imagens</div>
+                <div class="feature-description">Crie imagens PNG personalizadas a partir de descrições em texto.</div>
+                <div class="feature-tags">
+                    <span class="tag">Visão</span>
+                    <span class="tag">DALL-E</span>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Monitoramento</div>
+                <div class="feature-description">Acompanhe alterações no workspace com snapshots inteligentes.</div>
+                <div class="feature-tags">
+                    <span class="tag">Diff</span>
+                    <span class="tag">Git</span>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <div class="feature-title">Gerador de Sites</div>
+                <div class="feature-description">Crie automaticamente sites HTML/CSS/JS funcionais.</div>
+                <div class="feature-tags">
+                    <span class="tag">Web</span>
+                    <span class="tag">Frontend</span>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔧</div>
+                <div class="feature-title">Ferramentas Integradas</div>
+                <div class="feature-description">Acesso controlado a shell, HTTP, ficheiros e MCP servers.</div>
+                <div class="feature-tags">
+                    <span class="tag">Ferramentas</span>
+                    <span class="tag">APIs</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h2>Comece Agora</h2>
+            <div class="cta-buttons">
+                <button class="btn btn-primary" onclick="openDashboard()">🚀 Abrir Dashboard</button>
+                <button class="btn btn-secondary" onclick="showCommands()">📖 Ver Comandos</button>
+            </div>
+        </div>
+
+        <!-- Arquitetura -->
+        <div class="section">
+            <h2 class="section-title">🏗️ Arquitetura do Projeto</h2>
+            <div class="architecture">
+                <h3>Estrutura de Diretórios</h3>
+                <div class="architecture-item">
+                    <strong>app/main.py</strong> - Interface CLI interativa com suporte a comandos diretos
+                </div>
+                <div class="architecture-item">
+                    <strong>app/agent.py</strong> - Loop do agente com tool calling e decisões inteligentes
+                </div>
+                <div class="architecture-item">
+                    <strong>app/tools.py</strong> - Registro de ferramentas com guardrails de segurança
+                </div>
+                <div class="architecture-item">
+                    <strong>app/media.py</strong> - Processamento de voz, áudio e imagem
+                </div>
+                <div class="architecture-item">
+                    <strong>app/site_builder.py</strong> - Gerador automático de sites HTML/CSS/JS
+                </div>
+                <div class="architecture-item">
+                    <strong>app/memory.py</strong> - Memória persistente em SQLite
+                </div>
+                <div class="architecture-item">
+                    <strong>app/dashboard.py</strong> - Servidor HTTP e interface web interativa
+                </div>
+                <div class="architecture-item">
+                    <strong>mcp/simple_server.py</strong> - Servidor Model Context Protocol de exemplo
+                </div>
+            </div>
+        </div>
+
+        <!-- Comandos CLI -->
+        <div class="section" id="commands-section" style="display: none;">
+            <h2 class="section-title">💻 Comandos Disponíveis</h2>
+            <div class="commands-grid">
+                <div class="command-item">
+                    <div class="command-name">python -m app.main</div>
+                    <div class="command-description">Inicia o modo chat interativo com o agente.</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">python -m app.main ask "sua pergunta"</div>
+                    <div class="command-description">Envia uma pergunta única ao agente e retorna a resposta.</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">python -m app.main doctor</div>
+                    <div class="command-description">Executa diagnóstico do ambiente e dependências.</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">python -m app.main dashboard</div>
+                    <div class="command-description">Abre o dashboard web interativo (porta 5173).</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">python -m app.main listen --seconds 5</div>
+                    <div class="command-description">Grava áudio do microfone e transcreve.</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">python -m app.main speak "seu texto"</div>
+                    <div class="command-description">Converte texto em voz usando TTS.</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">python -m app.main image --prompt "sua descrição"</div>
+                    <div class="command-description">Gera uma imagem PNG a partir de um prompt de texto.</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">python -m app.main site --project nome --title "Título" --brief "Descrição"</div>
+                    <div class="command-description">Cria um novo site base HTML/CSS/JS.</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">python -m app.main monitor</div>
+                    <div class="command-description">Monitora alterações no workspace com snapshot.</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">.\run_agent.cmd</div>
+                    <div class="command-description">Script Windows que cria venv, instala dependências e inicia o agente.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuração -->
+        <div class="section">
+            <h2 class="section-title">⚙️ Configuração</h2>
+            <div class="architecture">
+                <h3>Variáveis de Ambiente (.env)</h3>
+                <div class="architecture-item">
+                    <strong>LOCAL_AGENT_MODEL</strong> - Modelo a usar (ex: qwen3:8b, llama2, mistral)
+                </div>
+                <div class="architecture-item">
+                    <strong>LOCAL_AGENT_BASE_URL</strong> - URL da API (ex: http://localhost:11434/v1 para Ollama)
+                </div>
+                <div class="architecture-item">
+                    <strong>LOCAL_AGENT_API_KEY</strong> - Chave de API (ex: "ollama" para Ollama)
+                </div>
+                <div class="architecture-item">
+                    <strong>LOCAL_AGENT_MULTIMODAL_API_KEY</strong> - Chave OpenAI para imagens/transcrição (opcional)
+                </div>
+                <div class="architecture-item">
+                    <strong>LOCAL_AGENT_ALLOW_WRITE</strong> - Permitir escrita em ficheiros (true/false)
+                </div>
+                <div class="architecture-item">
+                    <strong>LOCAL_AGENT_ENABLE_SHELL</strong> - Permitir acesso ao shell (true/false)
+                </div>
+            </div>
+        </div>
+
+        <!-- Requisitos -->
+        <div class="section">
+            <h2 class="section-title">📋 Requisitos</h2>
+            <div class="architecture">
+                <h3>Dependências do Sistema</h3>
+                <div class="architecture-item">
+                    <strong>Python 3.11+</strong> - Versão mínima do Python
+                </div>
+                <div class="architecture-item">
+                    <strong>Ollama</strong> - Para modelos locais (opcional, se usar API remota)
+                </div>
+                <div class="architecture-item">
+                    <strong>Microfone</strong> - Para recursos de áudio (opcional)
+                </div>
+                <div class="architecture-item">
+                    <strong>OpenAI API Key</strong> - Para geração de imagens/transcrição (opcional)
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2026 Local Agent Dashboard | Agente multimodal local com ferramentas e guardrails</p>
+        </footer>
+    </div>
+
+    <script>
+        function openDashboard() {
+            // Tenta abrir o dashboard, se não estiver disponível, dá instruções
+            const port = 5173;
+            const dashboardUrl = `http://localhost:${port}`;
+            
+            // Abre em nova aba
+            const win = window.open(dashboardUrl, '_blank');
+            
+            // Se a janela não abriu (bloqueada), mostra instruções
+            if (!win || win.closed || typeof win.closed == "undefined") {
+                alert(`Para usar o dashboard, execute:\npython -m app.main dashboard\n\nDepois aceda a: ${dashboardUrl}`);
+            }
+        }
+
+        function showCommands() {
+            const section = document.getElementById('commands-section');
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                section.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                section.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

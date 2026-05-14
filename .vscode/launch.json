@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python Debugger: Module",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "${fileBasenameNoExtension}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Executar Agente Local",
+            "type": "python",
+            "request": "launch",
+            "module": "app.main",
+            "cwd": "${workspaceFolder}/local_agent_starter",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        }
+    ]
+}

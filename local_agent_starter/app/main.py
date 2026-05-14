@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 from .agent import LocalAgent
 from .config import Settings, load_settings
+from .dashboard import DashboardServer
 from .memory import MemoryStore
 from .tools import ToolRegistry
 
@@ -70,6 +71,10 @@ def _build_parser() -> argparse.ArgumentParser:
     image_parser.add_argument("--size", default="")
     image_parser.add_argument("--quality", default="")
 
+    dashboard_parser = subparsers.add_parser("dashboard", help="Abre o dashboard web interativo.")
+    dashboard_parser.add_argument("--host", default="localhost", help="Host do servidor (padrão: localhost)")
+    dashboard_parser.add_argument("--port", type=int, default=5173, help="Porta do servidor (padrão: 5173)")
+
     return parser
 
 
@@ -84,6 +89,7 @@ def _interactive_help() -> None:
         "  /speak <texto>              fala o texto no sistema\n"
         "  /site nome|titulo|brief     cria um site base\n"
         "  /image ficheiro|prompt      gera imagem PNG\n"
+        "  /dashboard                  abre o dashboard web\n"
         "  /quit                       termina a sessao\n"
     )
 
@@ -135,6 +141,12 @@ def _handle_interactive_command(raw_input: str, tools: ToolRegistry, agent: Loca
             print("Uso: /image ficheiro.png|prompt da imagem")
             return True
         _print_payload(tools.generate_image(prompt=parts[1], output_path=parts[0]))
+        return True
+    if command == "dashboard":
+        from .dashboard import DashboardServer
+        dashboard = DashboardServer(tools.settings, tools, agent)
+        print("Iniciando dashboard em http://localhost:5173...")
+        dashboard.start_server()
         return True
 
     print("Comando local desconhecido. Use /help.")
@@ -217,6 +229,18 @@ def main(argv: list[str] | None = None) -> int:
             )
         )
         return 0
+    if args.command == "dashboard":
+        dashboard = DashboardServer(settings, tools, agent)
+        dashboard.start_server(host=args.host, port=args.port)
+        print(f"\n🎨 Dashboard aberto em: http://{args.host}:{args.port}")
+        print("Pressione Ctrl+C para encerrar.")
+        import time
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            print("\nDashboard encerrado.")
+            return 0
 
     return _run_chat(settings, tools, agent)
 
