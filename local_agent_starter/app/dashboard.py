@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from typing import Any
 
@@ -537,9 +539,6 @@ class DashboardServer:
     def start_server(self, host: str = "localhost", port: int = 5173) -> None:
         """Inicia o servidor HTTP."""
         try:
-            from http.server import HTTPServer, BaseHTTPRequestHandler
-            import threading
-
             handler = self._create_handler()
             server = HTTPServer((host, port), handler)
 

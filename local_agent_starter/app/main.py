@@ -232,7 +232,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "dashboard":
         dashboard = DashboardServer(settings, tools, agent)
         dashboard.start_server(host=args.host, port=args.port)
-        print(f"\n🎨 Dashboard aberto em: http://{args.host}:{args.port}")
+        print(f"\nDashboard aberto em: http://{args.host}:{args.port}")
         print("Pressione Ctrl+C para encerrar.")
         import time
         try:
